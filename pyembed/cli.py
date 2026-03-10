@@ -6,7 +6,13 @@ import subprocess
 import sys
 from collections import Counter
 
-from .config import add_recent_version, get_default_version, get_recent_versions, get_root, set_default_version
+from .config import (
+    add_recent_version,
+    get_default_version,
+    get_recent_versions,
+    get_root,
+    set_default_version,
+)
 from .download import (
     NetworkError,
     add_pip,
@@ -19,8 +25,8 @@ from .local import (
     copy_version_to,
     get_python_exe,
     get_version_dir_size,
-    list_installed,
     has_pip,
+    list_installed,
     uninstall_version,
     verify_version,
 )
@@ -77,7 +83,7 @@ def _resolve_version(root: str, version: str | None, for_what: str = "коман
         )
     else:
         print(
-            f"Укажите версию или задайте по умолчанию: pyembed default 3.12.0",
+            "Укажите версию или задайте по умолчанию: pyembed default 3.12.0",
             file=sys.stderr,
         )
     return None
@@ -847,7 +853,7 @@ def run_interactive() -> int:
                     if sys.platform == "win32":
                         from .path_env import path_add
                         if path_add(dest_abs):
-                            print(f"Добавлено в PATH. Изменения в новых окнах консоли.")
+                            print("Добавлено в PATH. Изменения в новых окнах консоли.")
                         else:
                             print("Путь уже в PATH.")
                 except FileExistsError as e:
@@ -1007,7 +1013,7 @@ def run_interactive() -> int:
                 print("Управление PATH поддерживается только на Windows.")
                 print()
                 continue
-            from .path_env import path_add, path_remove, path_contains, path_remove_duplicates
+            from .path_env import path_add, path_contains, path_remove, path_remove_duplicates
 
             sub_path = input("  1 — Добавить/убрать версию  2 — Убрать дубликаты в PATH  [1]: ").strip() or "1"
             if sub_path == "2":
@@ -1074,7 +1080,7 @@ def run_interactive() -> int:
             print()
             continue
         if choice == "9":
-            from .download import list_cache, clear_cache
+            from .download import clear_cache, list_cache
             items = list_cache(root)
             if not items:
                 print("  Кэш пуст.")

@@ -4,8 +4,8 @@ import re
 import shutil
 import socket
 import zipfile
-from urllib.request import urlopen, Request
 from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 from .version_util import version_sort_key
 
@@ -125,7 +125,7 @@ def _network_error_message(exc: Exception, context: str = "загрузка") ->
     if isinstance(exc, HTTPError):
         if exc.code == 404:
             return (
-                f"Версия не найдена по указанному URL (404).",
+                "Версия не найдена по указанному URL (404).",
                 "Проверьте доступные версии: pyembed list -a",
             )
         if exc.code == 403:

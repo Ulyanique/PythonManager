@@ -19,12 +19,12 @@ if str(_root) not in sys.path:
 
 try:
     import tkinter as tk
-    from tkinter import ttk, messagebox
+    from tkinter import messagebox, ttk
 except ImportError:
     print("Требуется tkinter (обычно идёт с Python).")
     sys.exit(1)
 
-from backup_sources import run_backup, BACKUPS_DIR
+from backup_sources import BACKUPS_DIR, run_backup  # noqa: E402
 
 
 def run_in_thread(tk_root, func, on_done):
@@ -33,8 +33,8 @@ def run_in_thread(tk_root, func, on_done):
         try:
             result = func()
             tk_root.after(0, lambda: on_done(result, None))
-        except Exception as e:  # pylint: disable=broad-except
-            tk_root.after(0, lambda: on_done(None, e))
+        except Exception as exc:  # pylint: disable=broad-except
+            tk_root.after(0, lambda ex=exc: on_done(None, ex))
     t = threading.Thread(target=work, daemon=True)
     t.start()
 

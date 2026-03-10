@@ -20,15 +20,16 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 try:
     import tkinter as tk
-    from tkinter import ttk, messagebox, simpledialog
+    from tkinter import messagebox, simpledialog, ttk
 except ImportError:
     print("Требуется tkinter (обычно идёт с Python).")
     sys.exit(1)
 
 # Импорты pyembed для чтения состояния (без subprocess)
-from pyembed.config import get_root, get_default_version, set_default_version
-from pyembed.local import list_installed, get_python_exe
-from pyembed.path_env import path_contains  # только Windows
+from pyembed.config import get_default_version, get_root, set_default_version  # noqa: E402
+from pyembed.local import get_python_exe, list_installed  # noqa: E402
+from pyembed.path_env import path_contains  # noqa: E402
+
 
 # Команда для вызова CLI (из того же интерпретатора). -u = небуферизованный вывод.
 def _pyembed_cmd(*args: str) -> list[str]:
@@ -58,11 +59,11 @@ def _run_cmd(tk_root, args: list[str], log_callback, done_callback):
             for line in iter(proc.stdout.readline, ""):
                 line = line.rstrip("\r\n")
                 if line:
-                    tk_root.after(0, lambda l=line: log_callback(l))
+                    tk_root.after(0, lambda ln=line: log_callback(ln))
             proc.wait()
             tk_root.after(0, lambda: done_callback(proc.returncode))
-        except Exception as e:  # pylint: disable=broad-except
-            tk_root.after(0, lambda: log_callback(f"Ошибка: {e}\n"))
+        except Exception as exc:  # pylint: disable=broad-except
+            tk_root.after(0, lambda ex=exc: log_callback(f"Ошибка: {ex}\n"))
             tk_root.after(0, lambda: done_callback(-1))
     t = threading.Thread(target=work, daemon=True)
     t.start()
