@@ -1,0 +1,57 @@
+# Установленные версии Python и кэш (не коммитить)
+pythons/
+*.embed-*.zip
+
+# Виртуальное окружение
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Тесты и линтеры
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+ruff_cache/
+.mypy_cache/
+.pyright/
+
+# Бэкапы проекта (локальные)
+backups/
+
+# Сборка exe (PyInstaller)
+*.spec
+
+# IDE и ОС
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Локальные конфиги (если появятся)
+.pyembed.local
