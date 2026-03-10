@@ -13,12 +13,14 @@ ROOT = Path(__file__).resolve().parent.parent
 def run_pyembed(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess:
     """Запуск pyembed через python -m pyembed."""
     cmd = [sys.executable, "-m", "pyembed", *args]
-    run_env = {**os.environ, **(env or {})}
+    run_env = {**os.environ, "PYTHONIOENCODING": "utf-8", **(env or {})}
     return subprocess.run(
         cmd,
         cwd=ROOT,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=15,
         env=run_env,
     )
