@@ -45,6 +45,8 @@ def main() -> int:
     ]
     if sys.platform == "win32":
         cmd.extend(["--hidden-import", "pyembed.path_env"])
+    if gui:
+        cmd.extend(["--hidden-import", "pyembed.gui"])
     return subprocess.call(cmd, cwd=ROOT)
 
 

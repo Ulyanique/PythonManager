@@ -1308,10 +1308,16 @@ def main() -> int:
         os.environ["PYEMBED_ROOT"] = args.root
 
     if args.command is None:
-        # Windowed/GUI exe has no console — input() would raise "lost sys.stdin"
+        # Windowed/GUI exe has no console — показываем окно вместо интерактивного меню
         if sys.stdin is None or getattr(sys.stdin, "closed", True):
-            _show_no_console_message()
-            return 1
+            try:
+                from .gui import run_gui
+                return run_gui()
+            except Exception as e:
+                _show_no_console_message()
+                if sys.stderr and not getattr(sys.stderr, "closed", True):
+                    print(f"GUI failed: {e}", file=sys.stderr)
+                return 1
         return run_interactive()
 
     return args.func(args)
