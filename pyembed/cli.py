@@ -836,6 +836,14 @@ def run_interactive() -> int:
         except (EOFError, KeyboardInterrupt):
             print()
             return 0
+        except RuntimeError as e:
+            if "stdin" in str(e).lower():
+                print(
+                    "No console (windowed exe). Run with a command: list, install 3.12.0 --pip, etc.",
+                    file=sys.stderr,
+                )
+                return 1
+            raise
 
         if not choice:
             continue
@@ -1283,6 +1291,14 @@ def main() -> int:
         os.environ["PYEMBED_ROOT"] = args.root
 
     if args.command is None:
+        # Windowed/GUI exe has no console — input() would raise "lost sys.stdin"
+        if sys.stdin is None or getattr(sys.stdin, "closed", True):
+            parser.print_help()
+            print(
+                "\nNo console: run with a command, e.g. list, install 3.12.0 --pip",
+                file=sys.stderr,
+            )
+            return 1
         return run_interactive()
 
     return args.func(args)

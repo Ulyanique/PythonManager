@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 Сборка одного exe через PyInstaller.
-Запуск из корня проекта: python scripts/build_exe.py
+Запуск из корня проекта: python scripts/build_exe.py [--gui]
 Требуется: pip install pyinstaller
+--gui: без консоли (--windowed), имя pyembed-gui
 """
 import subprocess
 import sys
@@ -12,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def main() -> int:
+    gui = "--gui" in sys.argv
     try:
         import PyInstaller  # noqa: F401
     except ImportError:
@@ -23,7 +25,7 @@ def main() -> int:
         "PyInstaller",
         "--onefile",
         "--name",
-        "pyembed",
+        "pyembed-gui" if gui else "pyembed",
         "--paths",
         str(ROOT),
         "--hidden-import",
@@ -38,7 +40,7 @@ def main() -> int:
         "pyembed.local",
         "--hidden-import",
         "pyembed.version_util",
-        "--console",
+        "--windowed" if gui else "--console",
         str(ROOT / "run.py"),
     ]
     if sys.platform == "win32":

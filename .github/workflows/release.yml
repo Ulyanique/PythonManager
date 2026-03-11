@@ -29,6 +29,9 @@ jobs:
       - name: Build pyembed.exe
         run: python scripts/build_exe.py
 
+      - name: Build pyembed-gui.exe
+        run: python scripts/build_exe.py --gui
+
       - name: Get version from tag
         id: version
         run: |
@@ -36,7 +39,9 @@ jobs:
           echo "VERSION=$ver" >> $env:GITHUB_OUTPUT
 
       - name: Name exe with version
-        run: Copy-Item dist\pyembed.exe "dist\pyembed-${{ steps.version.outputs.VERSION }}.exe"
+        run: |
+          Copy-Item dist\pyembed.exe "dist\pyembed-${{ steps.version.outputs.VERSION }}.exe"
+          Copy-Item dist\pyembed-gui.exe "dist\pyembed-${{ steps.version.outputs.VERSION }}-gui.exe"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -44,6 +49,8 @@ jobs:
           name: Release ${{ steps.version.outputs.VERSION }}
           draft: false
           generate_release_notes: true
-          files: dist/pyembed-${{ steps.version.outputs.VERSION }}.exe
+          files: |
+            dist/pyembed-${{ steps.version.outputs.VERSION }}.exe
+            dist/pyembed-${{ steps.version.outputs.VERSION }}-gui.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
