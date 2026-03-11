@@ -49,6 +49,26 @@ def _whatsnew_url(version: str) -> str:
     return "https://docs.python.org/3/whatsnew/"
 
 
+def _show_no_console_message() -> None:
+    """Показать сообщение при запуске windowed exe без аргументов (нет консоли)."""
+    msg = (
+        "This is the windowed build (no console).\n\n"
+        "Run from Command Prompt or a shortcut with a command, e.g.:\n"
+        "  pyembed-gui.exe list\n"
+        "  pyembed-gui.exe install 3.12.0 --pip"
+    )
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            ctypes.windll.user32.MessageBoxW(  # type: ignore[attr-defined]
+                None, msg, "pyembed", 0x40
+            )
+        except Exception:
+            pass
+    if sys.stderr and not getattr(sys.stderr, "closed", True):
+        print(msg, file=sys.stderr)
+
+
 def _copy_to_clipboard(text: str) -> bool:
     """Скопировать текст в буфер обмена (Windows). Возвращает True при успехе."""
     if sys.platform != "win32":
@@ -838,10 +858,7 @@ def run_interactive() -> int:
             return 0
         except RuntimeError as e:
             if "stdin" in str(e).lower():
-                print(
-                    "No console (windowed exe). Run with a command: list, install 3.12.0 --pip, etc.",
-                    file=sys.stderr,
-                )
+                _show_no_console_message()
                 return 1
             raise
 
@@ -1293,11 +1310,7 @@ def main() -> int:
     if args.command is None:
         # Windowed/GUI exe has no console — input() would raise "lost sys.stdin"
         if sys.stdin is None or getattr(sys.stdin, "closed", True):
-            parser.print_help()
-            print(
-                "\nNo console: run with a command, e.g. list, install 3.12.0 --pip",
-                file=sys.stderr,
-            )
+            _show_no_console_message()
             return 1
         return run_interactive()
 
